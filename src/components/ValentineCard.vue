@@ -20,7 +20,7 @@
       <button class="close-btn" @click="closeCard">✕</button>
       
       <div class="content">
-        <h1 class="title">Selamat Hari Valentine Regita Cahyani</h1>
+        <h1 class="title">Selamat Hari Valentine Regita Cahyani Cantik</h1>
         
         <div class="message">
           <p class="love-text">Untuk orang terkasihku,</p>
