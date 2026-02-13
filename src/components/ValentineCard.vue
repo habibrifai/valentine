@@ -156,13 +156,7 @@ export default {
         "Bersamamu, setiap momen adalah Valentine yang sempurna 🌹",
         "Foto ini adalah bukti bahwa cinta kita nyata dan nyata 💑"
       ],
-      photos: (() => {
-        const photos = []
-        for (let i = 1; i <= 112; i++) {
-          photos.push(`/img/photo (${i}).jpg`)
-        }
-        return photos
-      })(),
+      photos: []
     }
   },
   computed: {
@@ -179,6 +173,9 @@ export default {
     }
   },
   mounted() {
+    // Load photos using Vite's import.meta.glob
+    this.loadPhotos()
+    
     // Create audio element for "eitss" sound effect - menggunakan audio sederhana
     this.whooshSound = new Audio()
     this.whooshSound.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2Gy/DaizsKGGS57OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT'
@@ -202,6 +199,21 @@ export default {
     this.stopAutoSlide()
   },
   methods: {
+    async loadPhotos() {
+      try {
+        // Simple approach: use public folder images
+        const photos = []
+        for (let i = 1; i <= 111; i++) {
+          photos.push(`/img/photo-${i}.jpg`)
+        }
+        this.photos = photos
+        
+        console.log('Loaded photos:', this.photos.length)
+      } catch (error) {
+        console.error('Error loading photos:', error)
+        this.photos = []
+      }
+    },
     openCard() {
       this.isOpened = true
       // Start music when card opens
