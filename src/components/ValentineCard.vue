@@ -120,6 +120,7 @@
 <script>
 export default {
   name: 'ValentineCard',
+  // Fixed image paths for GitHub Pages deployment
   data() {
     return {
       isOpened: false,
