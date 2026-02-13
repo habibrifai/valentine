@@ -52,7 +52,12 @@
           
           <!-- Foto Carousel -->
           <div class="photo-carousel">
-            <h3 class="carousel-title">Momen-momen Indah Kita 💕</h3>
+            <div class="carousel-header">
+              <h3 class="carousel-title">Momen-momen Indah Kita 💕</h3>
+              <button class="auto-slide-btn" @click="toggleAutoSlide" :class="{ paused: isAutoSlidePaused }">
+                {{ isAutoSlidePaused ? '▶️ Play' : '⏸️ Pause' }}
+              </button>
+            </div>
             
             <!-- Floating Hearts di Carousel -->
             <div class="carousel-hearts">
@@ -141,7 +146,8 @@ export default {
       musicVolume: 0.3,
       // Auto-slide carousel
       autoSlideInterval: null,
-      autoSlideDelay: 3000, // 1 detik
+      autoSlideDelay: 3000, // 3 detik
+      isAutoSlidePaused: false,
       // Carousel data
       currentPhotoIndex: 0,
       photoLoveQuotes: [
@@ -258,6 +264,17 @@ export default {
         this.autoSlideInterval = null
       }
     },
+    toggleAutoSlide() {
+      if (this.isAutoSlidePaused) {
+        // Resume auto-slide
+        this.startAutoSlide()
+        this.isAutoSlidePaused = false
+      } else {
+        // Pause auto-slide
+        this.stopAutoSlide()
+        this.isAutoSlidePaused = true
+      }
+    },
     handleResize() {
       // Force recompute of carouselStyle by updating a reactive property
       this.$forceUpdate()
@@ -277,8 +294,6 @@ export default {
     },
     // Music control methods
     initBackgroundMusic() {
-      // Beautiful in White by Westlife test
-      // Note: You need to add the actual audio file to src/assets/music/beautiful-in-white.mp3
       if (this.backgroundMusic) {
         // Already initialized, just try to play
         this.backgroundMusic.play().then(() => {
@@ -290,7 +305,7 @@ export default {
       }
       
       this.backgroundMusic = new Audio()
-      this.backgroundMusic.src = '/beautiful-in-white.mp3'
+      this.backgroundMusic.src = new URL('../assets/music/aaa.webm', import.meta.url).href
       this.backgroundMusic.volume = this.musicVolume
       this.backgroundMusic.loop = true
       this.backgroundMusic.preload = 'auto'
@@ -768,6 +783,37 @@ export default {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 10;
+}
+
+.carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding: 0 20px;
+}
+
+.auto-slide-btn {
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  color: #d63031;
+  font-weight: 600;
+}
+
+.auto-slide-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.auto-slide-btn.paused {
+  background: rgba(214, 48, 49, 0.3);
+  color: white;
 }
 
 .carousel-container {
