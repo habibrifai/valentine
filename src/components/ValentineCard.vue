@@ -39,6 +39,24 @@
     
     <!-- Fullscreen content -->
     <div class="fullscreen-content" v-if="isOpened && !isLoading">
+      <!-- Floating Love Icons Background -->
+      <div class="floating-love-icons">
+        <div v-for="n in 20" :key="n" class="floating-love" :style="getFloatingLoveStyle()">{{ getLoveIcon() }}</div>
+      </div>
+      
+      <!-- Animated Love Border -->
+      <div class="love-border-animation">
+        <div class="love-corner top-left">❤️</div>
+        <div class="love-corner top-right">💕</div>
+        <div class="love-corner bottom-left">💖</div>
+        <div class="love-corner bottom-right">💗</div>
+      </div>
+      
+      <!-- Pulsing Love Background -->
+      <div class="pulsing-love-bg">
+        <div v-for="n in 6" :key="n" class="pulse-love" :style="getPulseLoveStyle()">❤️</div>
+      </div>
+      
       <button class="close-btn" @click="closeCard">✕</button>
       
       <!-- Music Control Button -->
@@ -52,11 +70,11 @@
         <div class="message">
           <p class="love-text">Untuk orang terkasihku,</p>
           <p class="main-message">
-            Di hari Valentine ini, aku ingin mengucapkan betapa berartinya kamu dalam hidupku. 
+            Di hari Valentine ini, aku mau ngucapin betapa berartinya kamu dalam hidupku. 
             Setiap saat bersamamu adalah hadiah yang tak ternilai.
           </p>
           <p class="main-message">
-            Kamu adalah cahaya dalam hariku, senyum yang membuatku bahagia, 
+            Kamu adalah cahaya dalam hidupku, senyum yang membuatku bahagia, 
             dan cinta yang mengisi hatiku dengan kehangatan.
           </p>
           <p class="main-message">
@@ -65,12 +83,11 @@
           </p>
           
           <!-- Kalimat romantis tambahan untuk fullscreen -->
-          <div class="extra-messages">
-            <!-- <p class="romantic-quote">"Cinta adalah ketika kamu bahagia melihatnya bahagia, bahkan jika bukan bersamamu."</p> -->
+          <!-- <div class="extra-messages">
             <p class="romantic-quote">"Dalam setiap detik bersamamu, aku menemukan alasan untuk tersenyum."</p>
             <p class="romantic-quote">"Kamu adalah impian yang tidak pernah aku pikir akan menjadi nyata."</p>
             <p class="romantic-quote">"Hari Valentine hanyalah tanggal, tapi cintaku untukmu abadi selamanya."</p>
-          </div>
+          </div> -->
           
           <!-- Foto Carousel -->
           <div class="photo-carousel">
@@ -173,7 +190,7 @@ export default {
       musicVolume: 0.3,
       // Auto-slide carousel
       autoSlideInterval: null,
-      autoSlideDelay: 3000, // 3 detik
+      autoSlideDelay: 2000, // 2 detik
       isAutoSlidePaused: false,
       // Carousel data
       currentPhotoIndex: 0,
@@ -283,7 +300,7 @@ export default {
             this.startAutoSlide()
           }, 300)
         }
-      }, 30) // 3 seconds total (3000ms / 30ms = 100 steps)
+      }, 60)
     },
     closeCard() {
       this.isOpened = false
@@ -399,7 +416,7 @@ export default {
     // },
     sayYes() {
       this.yesAnswered = true
-      this.loveMessage = 'Aku juga sayang kamu! ❤️❤️❤️'
+      this.loveMessage = 'Aku juga sayaaaaang banget sama kamu! ❤️❤️❤️'
       
       setTimeout(() => {
         this.loveMessage = ''
@@ -524,12 +541,37 @@ export default {
         animationDuration: (Math.random() * 1.5 + 1.5) + 's',
         fontSize: (Math.random() * 15 + 20) + 'px'
       }
+    },
+    // Love animation methods for fullscreen
+    getLoveIcon() {
+      const loveIcons = ['❤️', '💕', '💖', '💗', '💝', '💘', '💞', '💓', '💟']
+      return loveIcons[Math.floor(Math.random() * loveIcons.length)]
+    },
+    getFloatingLoveStyle() {
+      return {
+        left: Math.random() * 100 + '%',
+        animationDelay: Math.random() * 8 + 's',
+        animationDuration: (Math.random() * 6 + 4) + 's',
+        fontSize: (Math.random() * 20 + 15) + 'px',
+        opacity: Math.random() * 0.6 + 0.2
+      }
+    },
+    getPulseLoveStyle() {
+      return {
+        left: Math.random() * 100 + '%',
+        top: Math.random() * 100 + '%',
+        animationDelay: Math.random() * 3 + 's',
+        animationDuration: (Math.random() * 2 + 2) + 's',
+        fontSize: (Math.random() * 60 + 40) + 'px'
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
 /* Loading Screen Styles */
 .loading-screen {
   position: fixed;
@@ -738,6 +780,7 @@ export default {
   justify-content: center;
   overflow-y: auto;
   animation: fadeIn 0.6s ease;
+  font-family: 'Cormorant Garamond', serif;
 }
 
 .envelope {
@@ -864,12 +907,15 @@ export default {
 }
 
 .title {
-  font-family: 'Dancing Script', cursive;
-  font-size: 36px;
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
   color: #d63031;
   margin-bottom: 30px;
   margin-top: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .message {
@@ -881,18 +927,22 @@ export default {
 }
 
 .love-text {
-  font-size: 20px;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 22px;
   color: #d63031;
   margin-bottom: 20px;
   font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .main-message {
-  font-size: 16px;
-  line-height: 1.6;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 25px;
+  line-height: 1.8;
   color: #2d3436;
   margin-bottom: 25px;
-  font-weight: 300;
+  font-weight: 400;
+  letter-spacing: 0.2px;
 }
 
 .signature {
@@ -913,13 +963,16 @@ export default {
 }
 
 .romantic-quote {
-  font-size: 16px;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 17px;
   font-style: italic;
   color: #2d3436;
-  margin-bottom: 20px;
-  line-height: 1.6;
+  margin-bottom: 25px;
+  line-height: 1.7;
   opacity: 0;
   animation: fadeInUp 0.8s ease forwards;
+  font-weight: 400;
+  letter-spacing: 0.1px;
 }
 
 .romantic-quote:nth-child(1) { animation-delay: 0.2s; }
@@ -976,14 +1029,16 @@ export default {
 }
 
 .carousel-title {
-  font-family: 'Dancing Script', cursive;
-  font-size: 28px;
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
   color: #d63031;
   margin-bottom: 25px;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 10;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
 
 .carousel-header {
@@ -1147,12 +1202,15 @@ export default {
 }
 
 .love-quote-text {
-  font-family: 'Dancing Script', cursive;
-  font-size: 18px;
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
   color: #d63031;
   font-style: italic;
   margin: 0;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: 400;
+  letter-spacing: 0.1px;
+  line-height: 1.4;
 }
 
 .carousel-btn {
@@ -1225,10 +1283,12 @@ export default {
 }
 
 .question-text {
-  font-size: 18px;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 20px;
   color: #d63031;
   margin-bottom: 20px;
   font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 .answer-buttons {
@@ -1312,12 +1372,14 @@ export default {
   background: rgba(255, 255, 255, 0.9);
   border-radius: 20px;
   text-align: center;
-  font-size: 24px;
+  font-size: 26px;
   color: #d63031;
   font-weight: 600;
   z-index: 10000;
   animation: bounceIn 0.5s ease;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 0.3px;
 }
 
 .floating-hearts {
@@ -1425,6 +1487,142 @@ export default {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Love Animation Styles for Fullscreen */
+.floating-love-icons {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.floating-love {
+  position: absolute;
+  animation: floatLoveUp 8s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(255, 107, 107, 0.3));
+}
+
+@keyframes floatLoveUp {
+  0% {
+    transform: translateY(100vh) rotate(0deg) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+    transform: translateY(90vh) rotate(45deg) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(50vh) rotate(180deg) scale(1.2);
+  }
+  90% {
+    opacity: 0.4;
+    transform: translateY(10vh) rotate(315deg) scale(0.8);
+  }
+  100% {
+    transform: translateY(-10vh) rotate(360deg) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.love-border-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.love-corner {
+  position: absolute;
+  font-size: 30px;
+  animation: cornerPulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(255, 107, 107, 0.5));
+}
+
+.top-left {
+  top: 30px;
+  left: 30px;
+  animation-delay: 0s;
+}
+
+.top-right {
+  top: 30px;
+  right: 30px;
+  animation-delay: 0.5s;
+}
+
+.bottom-left {
+  bottom: 30px;
+  left: 30px;
+  animation-delay: 1s;
+}
+
+.bottom-right {
+  bottom: 30px;
+  right: 30px;
+  animation-delay: 1.5s;
+}
+
+@keyframes cornerPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.7;
+  }
+  25% {
+    transform: scale(1.2) rotate(10deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1) rotate(-10deg);
+    opacity: 0.9;
+  }
+  75% {
+    transform: scale(1.3) rotate(5deg);
+    opacity: 0.8;
+  }
+}
+
+.pulsing-love-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pulse-love {
+  position: absolute;
+  animation: pulseLove 4s ease-in-out infinite;
+  opacity: 0.1;
+  filter: blur(2px);
+}
+
+@keyframes pulseLove {
+  0%, 100% {
+    transform: scale(0.8) rotate(0deg);
+    opacity: 0.05;
+  }
+  25% {
+    transform: scale(1.2) rotate(90deg);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0.1;
+  }
+  75% {
+    transform: scale(1.1) rotate(270deg);
+    opacity: 0.08;
   }
 }
 
