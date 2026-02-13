@@ -281,6 +281,8 @@ export default {
       this.isLoading = true
       this.loadingProgress = 0
       this.dotIndex = 0
+
+      this.initBackgroundMusic()
       
       // Start loading animations
       this.startLoadingAnimation()
@@ -294,8 +296,6 @@ export default {
           setTimeout(() => {
             this.isLoading = false
             this.isOpened = true
-            // Start music when card opens
-            this.initBackgroundMusic()
             // Start auto-slide carousel
             this.startAutoSlide()
           }, 300)
