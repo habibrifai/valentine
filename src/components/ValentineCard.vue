@@ -15,8 +15,30 @@
       </div>
     </div>
     
+    <!-- Loading Screen -->
+    <div class="loading-screen" v-if="isLoading">
+      <div class="loading-content">
+        <div class="loading-hearts">
+          <div v-for="n in 8" :key="n" class="loading-heart" :style="getLoadingHeartStyle()">❤️</div>
+        </div>
+        <div class="loading-text">
+          <h2 class="loading-title">Sedang mempersiapkan kejutan valentine.</h2>
+          <div class="loading-dots">
+            <span class="dot" :class="{ active: dotIndex >= 1 }"></span>
+            <span class="dot" :class="{ active: dotIndex >= 2 }"></span>
+            <span class="dot" :class="{ active: dotIndex >= 3 }"></span>
+          </div>
+        </div>
+        <div class="loading-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- Fullscreen content -->
-    <div class="fullscreen-content" v-if="isOpened">
+    <div class="fullscreen-content" v-if="isOpened && !isLoading">
       <button class="close-btn" @click="closeCard">✕</button>
       
       <!-- Music Control Button -->
@@ -129,6 +151,11 @@ export default {
   data() {
     return {
       isOpened: false,
+      isLoading: false,
+      loadingProgress: 0,
+      dotIndex: 0,
+      loadingInterval: null,
+      dotInterval: null,
       loveMessage: '',
       loveMessages: [
         'Aku juga mencintaimu! ❤️',
@@ -176,6 +203,9 @@ export default {
         transform: `translateX(${offset}px)`,
         transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
       }
+    },
+    progressPercentage() {
+      return Math.min(this.loadingProgress, 100)
     }
   },
   mounted() {
@@ -186,10 +216,6 @@ export default {
     this.whooshSound = new Audio()
     this.whooshSound.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2Gy/DaizsKGGS57OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT'
     this.whooshSound.volume = 0.5
-    this.whooshSound.preload = 'auto'
-    
-    // Add window resize listener
-    window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount() {
     // Remove window resize listener
@@ -203,6 +229,14 @@ export default {
     
     // Cleanup auto-slide
     this.stopAutoSlide()
+    
+    // Cleanup loading intervals
+    if (this.loadingInterval) {
+      clearInterval(this.loadingInterval)
+    }
+    if (this.dotInterval) {
+      clearInterval(this.dotInterval)
+    }
   },
   methods: {
     async loadPhotos() {
@@ -227,11 +261,29 @@ export default {
       }
     },
     openCard() {
-      this.isOpened = true
-      // Start music when card opens
-      this.initBackgroundMusic()
-      // Start auto-slide carousel
-      this.startAutoSlide()
+      this.isLoading = true
+      this.loadingProgress = 0
+      this.dotIndex = 0
+      
+      // Start loading animations
+      this.startLoadingAnimation()
+      this.startDotAnimation()
+      
+      // Simulate loading progress
+      this.loadingInterval = setInterval(() => {
+        this.loadingProgress += 2
+        if (this.loadingProgress >= 100) {
+          clearInterval(this.loadingInterval)
+          setTimeout(() => {
+            this.isLoading = false
+            this.isOpened = true
+            // Start music when card opens
+            this.initBackgroundMusic()
+            // Start auto-slide carousel
+            this.startAutoSlide()
+          }, 300)
+        }
+      }, 30) // 3 seconds total (3000ms / 30ms = 100 steps)
     },
     closeCard() {
       this.isOpened = false
@@ -455,12 +507,161 @@ export default {
         top: Math.random() * 100 + '%',
         animationDelay: Math.random() * 3 + 's'
       }
+    },
+    // Loading animation methods
+    startLoadingAnimation() {
+      // Progress animation is handled in openCard()
+    },
+    startDotAnimation() {
+      this.dotInterval = setInterval(() => {
+        this.dotIndex = (this.dotIndex % 3) + 1
+      }, 500)
+    },
+    getLoadingHeartStyle() {
+      return {
+        left: Math.random() * 100 + '%',
+        animationDelay: Math.random() * 2 + 's',
+        animationDuration: (Math.random() * 1.5 + 1.5) + 's',
+        fontSize: (Math.random() * 15 + 20) + 'px'
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+/* Loading Screen Styles */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #ff6b6b 75%, #feca57 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.loading-content {
+  text-align: center;
+  z-index: 10;
+  position: relative;
+}
+
+.loading-hearts {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 200px;
+  pointer-events: none;
+}
+
+.loading-heart {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.8);
+  animation: loadingFloatUp 2s linear infinite;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes loadingFloatUp {
+  0% {
+    transform: translateY(200px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.loading-text {
+  margin-bottom: 40px;
+}
+
+.loading-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 32px;
+  color: white;
+  margin: 0 0 20px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background: white;
+  transform: scale(1.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+.loading-progress {
+  width: 300px;
+  margin: 0 auto;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+  background-size: 200% 100%;
+  animation: progressGradient 2s linear infinite;
+  border-radius: 3px;
+  transition: width 0.1s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes progressGradient {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
 .valentine-container {
   position: relative;
   width: 100%;
@@ -1243,6 +1444,20 @@ export default {
   
   .content {
     padding: 20px;
+  }
+  
+  /* Loading Screen Responsive */
+  .loading-title {
+    font-size: 24px;
+    padding: 0 20px;
+  }
+  
+  .loading-progress {
+    width: 250px;
+  }
+  
+  .loading-hearts {
+    width: 250px;
   }
   
   /* Carousel responsive */
