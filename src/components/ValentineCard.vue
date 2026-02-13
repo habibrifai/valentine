@@ -6,6 +6,12 @@
     
     <!-- Card awal -->
     <div class="card" v-if="!isOpened">
+      <!-- Music Control Button for Envelope -->
+      <button class="music-btn-envelope" @click="toggleMusic" :class="{ playing: isMusicPlaying }">
+        <span v-if="isMusicPlaying" class="music-icon">❚❚</span>
+        <span v-else class="music-icon">▶</span>
+      </button>
+      
       <div class="card-front" @click="openCard">
         <div class="envelope">
           <div class="envelope-flap"></div>
@@ -61,7 +67,8 @@
       
       <!-- Music Control Button -->
       <button class="music-btn" @click="toggleMusic" :class="{ playing: isMusicPlaying }">
-        {{ isMusicPlaying ? '🎵' : '🎶' }}
+        <span v-if="isMusicPlaying" class="music-icon">❚❚</span>
+        <span v-else class="music-icon">▶</span>
       </button>
       
       <div class="content">
@@ -810,6 +817,46 @@ export default {
   border-top: 20px solid #ff6b6b;
 }
 
+.music-btn-envelope {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  z-index: 10;
+}
+
+.music-icon {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.music-btn-envelope:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.music-btn-envelope.playing {
+  background: rgba(214, 48, 49, 0.3);
+  animation: musicPulse 2s ease-in-out infinite;
+}
+
 .heart-icon {
   font-size: 60px;
   margin: 20px 0;
@@ -858,7 +905,6 @@ export default {
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 18px;
   transition: all 0.3s;
   display: flex;
   align-items: center;
