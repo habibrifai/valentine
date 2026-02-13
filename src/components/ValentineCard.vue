@@ -226,6 +226,7 @@ export default {
     }
   },
   mounted() {
+    this.initBackgroundMusic()
     // Load photos using Vite's import.meta.glob
     this.loadPhotos()
     
@@ -281,8 +282,6 @@ export default {
       this.isLoading = true
       this.loadingProgress = 0
       this.dotIndex = 0
-
-      this.initBackgroundMusic()
       
       // Start loading animations
       this.startLoadingAnimation()
