@@ -277,7 +277,7 @@ export default {
     },
     // Music control methods
     initBackgroundMusic() {
-      // Beautiful in White by Westlife
+      // Beautiful in White by Westlife test
       // Note: You need to add the actual audio file to src/assets/music/beautiful-in-white.mp3
       if (this.backgroundMusic) {
         // Already initialized, just try to play
