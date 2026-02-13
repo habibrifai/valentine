@@ -201,17 +201,23 @@ export default {
   methods: {
     async loadPhotos() {
       try {
-        // Simple approach: use public folder images
-        const photos = []
-        for (let i = 1; i <= 111; i++) {
-          photos.push(`/img/photo-${i}.jpg`)
-        }
-        this.photos = photos
+        // Load images from src/assets using Vite's import.meta.glob
+        const modules = import.meta.glob('../assets/img/photo-*.jpg')
+        const photoPromises = Object.values(modules).map(module => module())
+        const photoModules = await Promise.all(photoPromises)
+        
+        // Extract the default exports (the image URLs)
+        this.photos = photoModules.map(module => module.default)
         
         console.log('Loaded photos:', this.photos.length)
       } catch (error) {
         console.error('Error loading photos:', error)
-        this.photos = []
+        // Fallback: try to construct URLs manually
+        const photos = []
+        for (let i = 1; i <= 111; i++) {
+          photos.push(new URL(`../assets/img/photo-${i}.jpg`, import.meta.url).href)
+        }
+        this.photos = photos
       }
     },
     openCard() {
